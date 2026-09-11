@@ -1,0 +1,14 @@
+---
+- name: Install ingress-nginx
+  ansible.builtin.command: >
+    helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx
+    --version {{ versions.ingress_nginx.chart_version }}
+    --namespace ingress-nginx
+    --create-namespace
+    --set controller.image.registry={{ zot_fqdn }}
+    --set controller.image.image=registry.k8s.io/ingress-nginx/controller
+    --set controller.service.type=NodePort
+    --set controller.extraArgs.default-ssl-certificate=cert-manager/lab-ca-secret
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false

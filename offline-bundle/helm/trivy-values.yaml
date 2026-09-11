@@ -1,0 +1,4 @@
+# values for trivy
+# registry: zot.lab.example
+global:
+  imageRegistry: zot.lab.example

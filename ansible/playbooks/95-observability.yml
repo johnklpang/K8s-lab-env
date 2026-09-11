@@ -1,0 +1,13 @@
+---
+- name: Observability stack
+  hosts: masters
+  become: true
+  roles:
+    - role: prometheus
+      when: components.prometheus | default(false)
+    - role: grafana
+      when: components.grafana | default(false)
+    - role: loki
+      when: components.loki | default(false)
+    - role: opentelemetry
+      when: components.opentelemetry | default(false)

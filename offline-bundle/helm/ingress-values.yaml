@@ -1,0 +1,7 @@
+controller:
+  image:
+    registry: zot.lab.example
+    image: registry.k8s.io/ingress-nginx/controller
+  service:
+    type: NodePort
+  # Ingress hosts use DNS names such as grafana.lab.example

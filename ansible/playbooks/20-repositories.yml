@@ -1,0 +1,17 @@
+---
+- name: Configure offline repositories and registry services
+  hosts: ops
+  become: true
+  roles:
+    - repositories
+    - zot
+    - nginx_repos
+
+- name: Point cluster nodes at local repos
+  hosts: k8s
+  become: true
+  tasks:
+    - name: Configure offline dnf repositories using repo DNS name
+      ansible.builtin.include_role:
+        name: repositories
+        tasks_from: clients.yml

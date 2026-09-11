@@ -1,0 +1,30 @@
+---
+- name: Ensure resolved conf dir exists
+  ansible.builtin.file:
+    path: /etc/systemd/resolved.conf.d
+    state: directory
+    mode: "0755"
+
+- name: Point system DNS at OPS server FQDN-backed resolver
+  ansible.builtin.copy:
+    dest: /etc/systemd/resolved.conf.d/lab-dns.conf
+    mode: "0644"
+    content: |
+      [Resolve]
+      DNS={{ node_ips_by_fqdn[ops_fqdn] }}
+      Domains={{ lab_domain }}
+  notify: Restart resolved
+
+- name: Optionally install generated hosts fallback
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../../scripts/dns/generated/hosts"
+    dest: /etc/hosts.lab-generated
+    mode: "0644"
+  when: lab_dns_hosts_fallback | default(true)
+
+- name: Merge hosts fallback markers
+  ansible.builtin.blockinfile:
+    path: /etc/hosts
+    marker: "# {mark} ANSIBLE LAB GENERATED HOSTS"
+    block: "{{ lookup('file', playbook_dir + '/../../scripts/dns/generated/hosts') }}"
+  when: lab_dns_hosts_fallback | default(true)

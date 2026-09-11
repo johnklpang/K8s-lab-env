@@ -1,0 +1,11 @@
+version = 2
+[plugins."io.containerd.grpc.v1.cri"]
+  sandbox_image = "{{ zot_fqdn }}/registry.k8s.io/pause:{{ versions.pause_image.version }}"
+  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+    runtime_type = "io.containerd.runc.v2"
+    [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+      SystemdCgroup = true
+  [plugins."io.containerd.grpc.v1.cri".registry]
+    config_path = "/etc/containerd/certs.d"
+
+# Registry hosts configured under certs.d/{{ zot_fqdn }}/hosts.toml

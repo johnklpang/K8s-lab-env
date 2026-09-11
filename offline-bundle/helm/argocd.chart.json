@@ -1,0 +1,9 @@
+{
+  "component": "argocd",
+  "chart": "argo-cd",
+  "version": "7.7.8",
+  "source_url": "https://argoproj.github.io/argo-helm",
+  "offline_repo_url": "http://helm.lab.example:8081/helm/",
+  "values_file": "argocd-values.yaml",
+  "checksum": "622a8aff67dcc42f800c62c87454349ea716bef54b3038715851304c552d391c"
+}

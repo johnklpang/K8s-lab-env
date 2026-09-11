@@ -1,0 +1,11 @@
+---
+- name: Install Trivy operator
+  ansible.builtin.command: >
+    helm upgrade --install trivy-operator aqua/trivy-operator
+    --version {{ versions.trivy.chart_version }}
+    --namespace trivy-system
+    --create-namespace
+    --set trivy.image.registry={{ zot_fqdn }}
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false

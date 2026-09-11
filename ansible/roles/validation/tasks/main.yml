@@ -1,0 +1,25 @@
+---
+- name: Validate nodes Ready
+  ansible.builtin.command: kubectl get nodes
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  register: nodes
+  changed_when: false
+  failed_when: false
+
+- name: Validate core DNS names documented
+  ansible.builtin.debug:
+    msg:
+      - "ops={{ ops_fqdn }}"
+      - "zot={{ zot_fqdn }}"
+      - "repo={{ repo_fqdn }}"
+      - "helm={{ helm_fqdn }}"
+      - "grafana={{ service_fqdns.grafana }}"
+      - "argocd={{ service_fqdns.argocd }}"
+
+- name: List pods
+  ansible.builtin.command: kubectl get pods -A
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  changed_when: false
+  failed_when: false

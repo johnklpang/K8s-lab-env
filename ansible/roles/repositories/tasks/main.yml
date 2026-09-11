@@ -1,0 +1,31 @@
+---
+- name: Ensure offline RPM repo directory exists
+  ansible.builtin.file:
+    path: /opt/k8s-airgap-cicd-lab/offline-bundle/rpm-repo
+    state: directory
+    mode: "0755"
+
+- name: Disable external repos in offline mode
+  ansible.builtin.copy:
+    dest: /etc/yum.repos.d/offline-only.repo
+    mode: "0644"
+    content: |
+      # Offline repository — served at {{ repo_url }} (DNS: {{ repo_fqdn }})
+      [lab-offline]
+      name=LAB Offline Rocky/Kubernetes
+      baseurl={{ repo_url }}
+      enabled=1
+      gpgcheck=0
+  when: offline_mode | default(false)
+
+- name: Block external repo files when offline
+  ansible.builtin.shell: |
+    set -euo pipefail
+    for f in /etc/yum.repos.d/*.repo; do
+      [[ "$(basename "$f")" == "offline-only.repo" ]] && continue
+      sed -i 's/^enabled=1/enabled=0/' "$f" || true
+    done
+  args:
+    executable: /bin/bash
+  when: offline_mode | default(false)
+  changed_when: false

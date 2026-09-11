@@ -1,0 +1,62 @@
+---
+# Central LAB identity and naming — single source of truth for hostnames/FQDNs.
+# Do not hardcode IP addresses here. Network addresses live in network.yml.
+
+lab_name: k8s-airgap-cicd-lab
+lab_domain: lab.example
+
+# Short hostnames (FQDNs are generated: <hostname>.<lab_domain>)
+ops_hostname: ops
+master_hostname: master-01
+worker_hostnames:
+  - worker-01
+  - worker-02
+  - worker-03
+
+# Service short names (FQDNs generated automatically)
+service_hostnames:
+  zot: zot
+  repo: repo
+  helm: helm
+  grafana: grafana
+  argocd: argocd
+  postgres: postgres
+  kafka: kafka
+  opensearch: opensearch
+  emqx: emqx
+  prometheus: prometheus
+  trivy: trivy
+
+# LAB account (LAB ONLY — production must use stronger identity)
+lab_user:
+  username: devops
+  # Password is LAB-only; production uses vault/credentials.yml
+  password_hint: "See credentials.example.yml — LAB password is 'password'"
+  sudo: true
+  ssh_key_auth: true
+
+# Classification labels — do not claim PRODUCTION READY without validation
+classification:
+  lab: LAB_VERIFIED
+  production_reference: PRODUCTION_REFERENCE
+  production_ready: false
+
+# DNS implementation for LAB: dnsmasq | coredns | managed | hosts_fallback
+dns:
+  implementation: dnsmasq
+  primary_server_role: ops
+  configure_clients: true
+  verify_forward: true
+  verify_reverse: true
+  hosts_fallback: true
+
+# Paths
+paths:
+  project_root: /opt/k8s-airgap-cicd-lab
+  offline_bundle: /opt/k8s-airgap-cicd-lab/offline-bundle
+  state: /opt/k8s-airgap-cicd-lab/state
+  reports: /opt/k8s-airgap-cicd-lab/reports
+  logs: /opt/k8s-airgap-cicd-lab/logs
+
+# Default profile when none is specified
+default_profile: minimal

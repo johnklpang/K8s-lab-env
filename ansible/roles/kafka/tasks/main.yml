@@ -1,0 +1,17 @@
+---
+- name: Install Kafka in KRaft mode
+  ansible.builtin.command: >
+    helm upgrade --install kafka bitnami/kafka
+    --version {{ versions.kafka.chart_version }}
+    --namespace messaging
+    --create-namespace
+    --set image.registry={{ zot_fqdn }}
+    --set kraft.enabled=true
+    --set zookeeper.enabled=false
+    --set listeners.client.protocol=PLAINTEXT
+    --set controller.replicaCount=1
+    --set broker.replicaCount=1
+    --set persistence.size=5Gi
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false

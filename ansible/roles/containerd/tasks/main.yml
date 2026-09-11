@@ -1,0 +1,29 @@
+---
+- name: Install containerd
+  ansible.builtin.dnf:
+    name:
+      - containerd.io
+    state: present
+  failed_when: false
+
+- name: Ensure containerd config directory
+  ansible.builtin.file:
+    path: /etc/containerd
+    state: directory
+    mode: "0755"
+
+- name: Configure containerd with local Zot registry DNS endpoint
+  ansible.builtin.template:
+    src: config.toml.j2
+    dest: /etc/containerd/config.toml
+    mode: "0644"
+  notify: Restart containerd
+
+- name: Configure registry hosts for Zot DNS name
+  ansible.builtin.include_tasks: registry.yml
+
+- name: Enable containerd
+  ansible.builtin.service:
+    name: containerd
+    state: started
+    enabled: true

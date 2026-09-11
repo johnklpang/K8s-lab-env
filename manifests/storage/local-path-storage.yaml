@@ -1,0 +1,6 @@
+# Local-path provisioner placeholder — replace with mirrored offline manifest during preparation.
+# Image references must use zot.<lab_domain>/docker.io/rancher/local-path-provisioner
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: local-path-storage

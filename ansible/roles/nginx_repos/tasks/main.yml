@@ -1,0 +1,20 @@
+---
+- name: Install nginx for local RPM/Helm repositories
+  ansible.builtin.dnf:
+    name: nginx
+    state: present
+  failed_when: false
+
+- name: Configure nginx virtual hosts using DNS server names
+  ansible.builtin.template:
+    src: repos.conf.j2
+    dest: /etc/nginx/conf.d/lab-repos.conf
+    mode: "0644"
+  notify: Reload nginx
+
+- name: Ensure nginx running
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+  failed_when: false

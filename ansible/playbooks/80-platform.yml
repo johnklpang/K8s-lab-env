@@ -1,0 +1,11 @@
+---
+- name: Platform services
+  hosts: masters
+  become: true
+  roles:
+    - role: ingress
+      when: components.ingress | default(true)
+    - role: service_mesh
+      when: components.service_mesh | default(false)
+    - role: argocd
+      when: components.argocd | default(false)

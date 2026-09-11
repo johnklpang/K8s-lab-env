@@ -1,0 +1,37 @@
+# GENERATED from config/lab.yml + config/network.yml — hosts fallback only
+# Prefer dnsmasq/CoreDNS; do not maintain this file manually.
+127.0.0.1   localhost localhost.localdomain
+::1         localhost localhost.localdomain
+
+192.168.56.10   ops.lab.example
+192.168.56.10   ops
+192.168.56.11   master-01.lab.example
+192.168.56.11   master-01
+192.168.56.21   worker-01.lab.example
+192.168.56.21   worker-01
+192.168.56.22   worker-02.lab.example
+192.168.56.22   worker-02
+192.168.56.23   worker-03.lab.example
+192.168.56.23   worker-03
+192.168.56.10   zot.lab.example
+192.168.56.10   zot
+192.168.56.10   repo.lab.example
+192.168.56.10   repo
+192.168.56.10   helm.lab.example
+192.168.56.10   helm
+192.168.56.10   grafana.lab.example
+192.168.56.10   grafana
+192.168.56.10   argocd.lab.example
+192.168.56.10   argocd
+192.168.56.10   postgres.lab.example
+192.168.56.10   postgres
+192.168.56.10   kafka.lab.example
+192.168.56.10   kafka
+192.168.56.10   opensearch.lab.example
+192.168.56.10   opensearch
+192.168.56.10   emqx.lab.example
+192.168.56.10   emqx
+192.168.56.10   prometheus.lab.example
+192.168.56.10   prometheus
+192.168.56.10   trivy.lab.example
+192.168.56.10   trivy

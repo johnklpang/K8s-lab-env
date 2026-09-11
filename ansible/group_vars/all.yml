@@ -1,0 +1,198 @@
+lab_domain: lab.example
+lab_profile: minimal
+lab_user: devops
+lab_dns_hosts_fallback: true
+lab_classification: LAB_VERIFIED
+ops_fqdn: ops.lab.example
+master_fqdn: master-01.lab.example
+worker_fqdns:
+- worker-01.lab.example
+- worker-02.lab.example
+- worker-03.lab.example
+zot_fqdn: zot.lab.example
+zot_url: http://zot.lab.example:5000
+repo_fqdn: repo.lab.example
+repo_url: http://repo.lab.example:8080/rpm/
+helm_fqdn: helm.lab.example
+helm_url: http://helm.lab.example:8081/helm/
+dns_server_fqdn: ops.lab.example
+components:
+  kubernetes: true
+  containerd: true
+  cilium: true
+  hubble: true
+  dns: true
+  cert_manager: true
+  ingress: true
+  service_mesh: false
+  storage_local_path: true
+  ceph: false
+  postgres: true
+  kafka: false
+  opensearch: false
+  emqx: false
+  prometheus: true
+  grafana: true
+  loki: false
+  opentelemetry: false
+  argocd: true
+  trivy: true
+  gitea: false
+versions:
+  bundle_version: 1.0.0
+  rocky_linux: '9'
+  architecture: x86_64
+  kubernetes:
+    version: 1.31.4
+    source: https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
+    notes: Pinned stable 1.31.x compatible with containerd and Cilium
+  containerd:
+    version: 1.7.24
+    source: https://github.com/containerd/containerd
+    notes: CRI with systemd cgroup driver
+  runc:
+    version: 1.2.2
+    source: https://github.com/opencontainers/runc
+  cni_plugins:
+    version: 1.6.0
+    source: https://github.com/containernetworking/plugins
+  cilium:
+    version: 1.16.5
+    chart_version: 1.16.5
+    source: https://helm.cilium.io/
+    notes: Compatible with Kubernetes 1.31
+  hubble:
+    enabled_with: cilium
+    ui_version: 0.13.1
+  coredns:
+    version: 1.11.3
+    notes: Deployed as Kubernetes cluster DNS
+  cert_manager:
+    version: 1.16.2
+    chart_version: v1.16.2
+    source: https://charts.jetstack.io
+  ingress_nginx:
+    version: 1.11.3
+    chart_version: 4.11.3
+    source: https://kubernetes.github.io/ingress-nginx
+  istio:
+    version: 1.23.3
+    source: https://istio.io/latest/docs/setup/install/
+  argocd:
+    version: 2.13.2
+    chart_version: 7.7.8
+    source: https://argoproj.github.io/argo-helm
+  postgres:
+    version: 16.4.0
+    chart_version: 16.4.0
+    image: bitnami/postgresql:16.4.0
+    source: https://charts.bitnami.com/bitnami
+  kafka:
+    version: 3.8.0
+    chart_version: 30.1.4
+    mode: kraft
+    source: https://charts.bitnami.com/bitnami
+  opensearch:
+    version: 2.17.1
+    chart_version: 2.27.0
+    source: https://opensearch-project.github.io/helm-charts/
+  emqx:
+    version: 5.8.3
+    chart_version: 5.8.3
+    source: https://repos.emqx.io/charts
+  prometheus:
+    version: 2.54.1
+    chart_version: 66.2.1
+    source: https://prometheus-community.github.io/helm-charts
+    stack: kube-prometheus-stack
+  grafana:
+    version: 11.3.0
+    notes: Bundled with kube-prometheus-stack in LAB
+  loki:
+    version: 3.2.0
+    chart_version: 6.18.0
+    source: https://grafana.github.io/helm-charts
+  opentelemetry:
+    version: 0.112.0
+    chart_version: 0.68.1
+    source: https://open-telemetry.github.io/opentelemetry-helm-charts
+  rook_ceph:
+    version: 1.15.3
+    chart_version: v1.15.3
+    source: https://charts.rook.io/release
+  trivy:
+    version: 0.57.1
+    chart_version: 0.25.0
+    source: https://aquasecurity.github.io/helm-charts/
+  zot:
+    version: 2.1.1
+    source: https://github.com/project-zot/zot
+  helm:
+    version: 3.16.3
+    source: https://get.helm.sh
+  kubectl:
+    version: 1.31.4
+    notes: Aligned with Kubernetes cluster version
+  local_path_provisioner:
+    version: 0.0.30
+    source: https://github.com/rancher/local-path-provisioner
+  nginx:
+    version: 1.26.2
+    notes: Serves offline RPM and Helm repositories on OPS
+  dnsmasq:
+    version: '2.85'
+    notes: LAB DNS on OPS node
+  pause_image:
+    version: '3.10'
+    repository: registry.k8s.io/pause
+  compatibility:
+    rocky_linux: '9'
+    kubernetes_containerd: validated for 1.31.x / containerd 1.7.x
+    kubernetes_cilium: validated for 1.31.x / Cilium 1.16.x
+    status: LAB_VERIFIED
+kubernetes_pod_cidr: 10.244.0.0/16
+kubernetes_service_cidr: 10.96.0.0/12
+kubernetes_cluster_dns: 10.96.0.10
+service_fqdns:
+  zot: zot.lab.example
+  repo: repo.lab.example
+  helm: helm.lab.example
+  grafana: grafana.lab.example
+  argocd: argocd.lab.example
+  postgres: postgres.lab.example
+  kafka: kafka.lab.example
+  opensearch: opensearch.lab.example
+  emqx: emqx.lab.example
+  prometheus: prometheus.lab.example
+  trivy: trivy.lab.example
+ports:
+  kubernetes_api: 6443
+  etcd: 2379
+  kubelet: 10250
+  scheduler: 10259
+  controller_manager: 10257
+  cilium_health: 4240
+  hubble_relay: 4245
+  hubble_ui: 12000
+  ingress_http: 80
+  ingress_https: 443
+  zot: 5000
+  rpm_repo: 8080
+  helm_repo: 8081
+  grafana: 3000
+  prometheus: 9090
+  opensearch: 9200
+  opensearch_dashboards: 5601
+  postgres: 5432
+  kafka: 9092
+  emqx_mqtt: 1883
+  emqx_mqtts: 8883
+  emqx_dashboard: 18083
+  argocd: 443
+  dns: 53
+node_ips_by_fqdn:
+  ops.lab.example: 192.168.56.10
+  master-01.lab.example: 192.168.56.11
+  worker-01.lab.example: 192.168.56.21
+  worker-02.lab.example: 192.168.56.22
+  worker-03.lab.example: 192.168.56.23

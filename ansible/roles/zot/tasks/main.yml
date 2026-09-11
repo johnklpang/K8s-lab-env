@@ -1,0 +1,55 @@
+---
+- name: Ensure zot data directory
+  ansible.builtin.file:
+    path: /var/lib/zot
+    state: directory
+    mode: "0755"
+
+- name: Deploy zot config using DNS realm name
+  ansible.builtin.copy:
+    dest: /etc/zot/config.json
+    mode: "0644"
+    content: |
+      {
+        "storage": { "rootDirectory": "/var/lib/zot" },
+        "http": {
+          "address": "0.0.0.0",
+          "port": "{{ ports.zot | default(5000) }}",
+          "realm": "{{ zot_fqdn }}"
+        },
+        "log": { "level": "info" }
+      }
+  notify: Restart zot
+
+- name: Install zot binary if present in offline bundle
+  ansible.builtin.copy:
+    src: /opt/k8s-airgap-cicd-lab/offline-bundle/binaries/zot
+    dest: /usr/local/bin/zot
+    mode: "0755"
+    remote_src: true
+  failed_when: false
+
+- name: Install zot systemd unit
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/zot.service
+    mode: "0644"
+    content: |
+      [Unit]
+      Description=Zot OCI Registry ({{ zot_fqdn }})
+      After=network.target
+
+      [Service]
+      ExecStart=/usr/local/bin/zot serve /etc/zot/config.json
+      Restart=on-failure
+
+      [Install]
+      WantedBy=multi-user.target
+  notify: Restart zot
+
+- name: Enable zot
+  ansible.builtin.systemd:
+    name: zot
+    daemon_reload: true
+    enabled: true
+    state: started
+  failed_when: false

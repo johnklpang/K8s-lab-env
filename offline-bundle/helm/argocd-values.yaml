@@ -1,0 +1,12 @@
+global:
+  image:
+    repository: zot.lab.example/quay.io/argoproj/argocd
+server:
+  ingress:
+    enabled: true
+    hosts:
+      - argocd.lab.example
+configs:
+  params:
+    server.insecure: true
+# GitOps sources must be local (gitea.<domain> or offline git) — no Internet

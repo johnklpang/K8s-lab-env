@@ -1,0 +1,5 @@
+# Ansible collections useful for this LAB
+collections:
+  - name: ansible.posix
+  - name: community.general
+  - name: kubernetes.core

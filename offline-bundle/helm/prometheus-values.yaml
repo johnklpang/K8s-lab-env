@@ -1,0 +1,10 @@
+grafana:
+  ingress:
+    enabled: true
+    hosts:
+      - grafana.lab.example
+  adminPassword: lab-grafana-password
+prometheus:
+  prometheusSpec:
+    retention: 3d
+# Datasources reference kubernetes DNS service names only

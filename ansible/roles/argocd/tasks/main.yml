@@ -1,0 +1,14 @@
+---
+- name: Install Argo CD
+  ansible.builtin.command: >
+    helm upgrade --install argocd argo/argo-cd
+    --version {{ versions.argocd.chart_version }}
+    --namespace argocd
+    --create-namespace
+    --set global.image.repository={{ zot_fqdn }}/quay.io/argoproj/argocd
+    --set server.ingress.enabled=true
+    --set server.ingress.hosts[0]={{ service_fqdns.argocd }}
+    --set configs.params."server\.insecure"=true
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false

@@ -1,0 +1,24 @@
+---
+# Stage 10 — OS baseline, SSH, DNS client/server
+- name: OS base configuration
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - os_base
+    - ssh
+
+- name: DNS server on OPS
+  hosts: ops
+  become: true
+  roles:
+    - dns
+
+- name: DNS clients on cluster nodes
+  hosts: k8s
+  become: true
+  tasks:
+    - name: Ensure resolvers use OPS DNS FQDN-derived configuration
+      ansible.builtin.include_role:
+        name: dns
+        tasks_from: client.yml

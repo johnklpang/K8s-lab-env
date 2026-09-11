@@ -1,0 +1,9 @@
+{
+  "component": "postgres",
+  "chart": "postgresql",
+  "version": "16.4.0",
+  "source_url": "https://charts.bitnami.com/bitnami",
+  "offline_repo_url": "http://helm.lab.example:8081/helm/",
+  "values_file": "postgres-values.yaml",
+  "checksum": "f726381330e02b63f93905dc463f54ff2ccee9683e1bea0f44f5b3a8c9d72b60"
+}

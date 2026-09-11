@@ -1,0 +1,35 @@
+---
+# Storage profile — Standard + Rook-Ceph
+# Ceph is NOT recommended on 2 GB LAB nodes; expect failures or severe pressure.
+
+kubernetes: true
+containerd: true
+cilium: true
+hubble: true
+dns: true
+cert_manager: true
+ingress: true
+service_mesh: true
+storage_local_path: true
+ceph: true
+postgres: true
+kafka: true
+opensearch: true
+emqx: true
+prometheus: true
+grafana: true
+loki: true
+opentelemetry: true
+argocd: true
+trivy: true
+gitea: false
+
+profile_meta:
+  name: storage
+  classification: LAB_VERIFIED
+  description: "Standard profile plus Rook-Ceph (resource-intensive)"
+  resource_warnings: true
+  ceph_warning: >
+    Rook-Ceph is disabled by default for 2 GB LAB nodes.
+    This profile enables it for validation only. Production requires
+    dedicated storage nodes and higher resources.

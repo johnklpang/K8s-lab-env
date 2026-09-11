@@ -1,0 +1,14 @@
+---
+- name: Install OpenSearch (single-node LAB)
+  ansible.builtin.command: >
+    helm upgrade --install opensearch opensearch/opensearch
+    --version {{ versions.opensearch.chart_version }}
+    --namespace logging
+    --create-namespace
+    --set image.repository={{ zot_fqdn }}/docker.io/opensearchproject/opensearch
+    --set singleNode=true
+    --set resources.requests.memory=512Mi
+    --set persistence.size=5Gi
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false

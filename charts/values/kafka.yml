@@ -1,0 +1,14 @@
+image:
+  registry: "{{ZOT_FQDN}}"
+kraft:
+  enabled: true
+zookeeper:
+  enabled: false
+# Brokers advertise kubernetes DNS names (kafka.messaging.svc.cluster.local)
+listeners:
+  client:
+    protocol: PLAINTEXT
+controller:
+  replicaCount: 1
+broker:
+  replicaCount: 1

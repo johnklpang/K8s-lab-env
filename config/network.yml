@@ -1,0 +1,83 @@
+---
+# Single source of truth for network addressing.
+# IP addresses may appear ONLY in this file (and generated artifacts derived from it).
+# All scripts, Ansible roles, Helm values, manifests, and docs must use DNS/FQDN names.
+
+network:
+  private_network: "192.168.56.0/24"
+  # VirtualBox host-only / private network interface name hint
+  interface_hint: eth1
+
+nodes:
+  # Addresses are defined once here and consumed by Vagrant + inventory generators.
+  ops:
+    hostname: ops
+    ip: "192.168.56.10"
+  master-01:
+    hostname: master-01
+    ip: "192.168.56.11"
+  worker-01:
+    hostname: worker-01
+    ip: "192.168.56.21"
+  worker-02:
+    hostname: worker-02
+    ip: "192.168.56.22"
+  worker-03:
+    hostname: worker-03
+    ip: "192.168.56.23"
+
+# Service VIP / bind addresses on the OPS node (resolved via DNS names elsewhere)
+services:
+  zot:
+    bind_host: ops
+    port: 5000
+    tls: false
+    # URL built as: {scheme}://{service_fqdn}:{port}
+    scheme: http
+  repo:
+    bind_host: ops
+    port: 8080
+    path: /rpm/
+    scheme: http
+  helm:
+    bind_host: ops
+    port: 8081
+    path: /helm/
+    scheme: http
+  dns:
+    bind_host: ops
+    port: 53
+    protocol: udp
+
+# Kubernetes cluster networking (CIDRs — not node IPs)
+kubernetes:
+  pod_cidr: "10.244.0.0/16"
+  service_cidr: "10.96.0.0/12"
+  cluster_dns: "10.96.0.10"
+
+# Ports documentation source (consumed by docs generators and preflight)
+ports:
+  kubernetes_api: 6443
+  etcd: 2379
+  kubelet: 10250
+  scheduler: 10259
+  controller_manager: 10257
+  cilium_health: 4240
+  hubble_relay: 4245
+  hubble_ui: 12000
+  ingress_http: 80
+  ingress_https: 443
+  zot: 5000
+  rpm_repo: 8080
+  helm_repo: 8081
+  grafana: 3000
+  prometheus: 9090
+  opensearch: 9200
+  opensearch_dashboards: 5601
+  postgres: 5432
+  kafka: 9092
+  emqx_mqtt: 1883
+  emqx_mqtts: 8883
+  emqx_dashboard: 18083
+  argocd: 443
+  dns: 53

@@ -1,0 +1,21 @@
+---
+- name: Security baselines
+  hosts: masters
+  become: true
+  roles:
+    - role: cert_manager
+      when: components.cert_manager | default(true)
+  tasks:
+    - name: Apply Pod Security Admission labels on namespaces
+      ansible.builtin.command: >
+        kubectl create namespace {{ item }} --dry-run=client -o yaml | kubectl apply -f -
+      loop:
+        - database
+        - messaging
+        - logging
+        - monitoring
+        - observability
+        - argocd
+        - ingress-nginx
+      changed_when: false
+      failed_when: false

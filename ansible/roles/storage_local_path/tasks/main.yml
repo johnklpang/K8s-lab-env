@@ -1,0 +1,28 @@
+---
+- name: Deploy local-path provisioner (LAB storage)
+  ansible.builtin.shell: |
+    set -euo pipefail
+    kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v{{ versions.local_path_provisioner.version }}/deploy/local-path-storage.yaml
+  args:
+    executable: /bin/bash
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  when: not (offline_mode | default(false))
+  failed_when: false
+
+- name: Deploy local-path from offline manifests
+  ansible.builtin.command: >
+    kubectl apply -f /opt/k8s-airgap-cicd-lab/manifests/storage/local-path-storage.yaml
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  when: offline_mode | default(false)
+  failed_when: false
+
+- name: Mark local-path as default StorageClass
+  ansible.builtin.command: >
+    kubectl annotate storageclass local-path
+    storageclass.kubernetes.io/is-default-class=true --overwrite
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false
+  changed_when: false

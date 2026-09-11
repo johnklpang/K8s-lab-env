@@ -1,0 +1,21 @@
+---
+- name: Install Kubernetes packages
+  hosts: k8s
+  become: true
+  roles:
+    - role: kubernetes
+      tasks_from: packages.yml
+
+- name: Initialize control plane
+  hosts: masters
+  become: true
+  roles:
+    - role: kubernetes
+      tasks_from: init.yml
+
+- name: Join workers
+  hosts: workers
+  become: true
+  roles:
+    - role: kubernetes
+      tasks_from: join.yml

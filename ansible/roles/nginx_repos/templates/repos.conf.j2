@@ -1,0 +1,22 @@
+# Local repositories served by DNS names repo.<domain> and helm.<domain>
+server {
+    listen {{ ports.rpm_repo | default(8080) }};
+    server_name {{ repo_fqdn }};
+    root /opt/k8s-airgap-cicd-lab/offline-bundle/rpm-repo;
+    autoindex on;
+    location /rpm/ {
+        alias /opt/k8s-airgap-cicd-lab/offline-bundle/rpm-repo/;
+        autoindex on;
+    }
+}
+
+server {
+    listen {{ ports.helm_repo | default(8081) }};
+    server_name {{ helm_fqdn }};
+    root /opt/k8s-airgap-cicd-lab/offline-bundle/helm;
+    autoindex on;
+    location /helm/ {
+        alias /opt/k8s-airgap-cicd-lab/offline-bundle/helm/;
+        autoindex on;
+    }
+}

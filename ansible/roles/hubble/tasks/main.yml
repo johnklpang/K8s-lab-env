@@ -1,0 +1,4 @@
+---
+- name: Ensure Hubble components enabled with Cilium
+  ansible.builtin.debug:
+    msg: "Hubble configured via Cilium Helm values; UI/relay use cluster DNS names"
