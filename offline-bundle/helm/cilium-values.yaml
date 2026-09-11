@@ -1,0 +1,16 @@
+# Cilium values — all registry references use Zot DNS name
+image:
+  repository: zot.lab.example/quay.io/cilium/cilium
+  useDigest: false
+operator:
+  image:
+    repository: zot.lab.example/quay.io/cilium/operator
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+  ui:
+    enabled: true
+ipam:
+  mode: kubernetes
+kubeProxyReplacement: true

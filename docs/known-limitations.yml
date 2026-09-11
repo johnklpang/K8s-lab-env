@@ -1,0 +1,11 @@
+---
+# Known limitations — LAB VERIFIED, not PRODUCTION READY
+limitations:
+  - Single control-plane (not HA)
+  - 2 vCPU / 2 GB per node — heavy components may not schedule
+  - LAB credentials are weak by design
+  - Zot may run HTTP without auth in LAB
+  - local-path storage is not production durable storage
+  - Full offline RPM/image population requires Internet prepare host with sufficient bandwidth/disk
+  - Clean-room VirtualBox validation must be run on a workstation with Vagrant/VirtualBox
+  - CIS script is oriented checks only — not a compliance certification

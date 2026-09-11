@@ -1,0 +1,45 @@
+---
+# Component enable/disable flags.
+# Profiles under config/profiles/ override these defaults when selected.
+# CLI --enable/--disable overrides apply only to the current execution.
+
+kubernetes: true
+containerd: true
+cilium: true
+hubble: true
+dns: true
+cert_manager: true
+ingress: true
+service_mesh: false
+storage_local_path: true
+ceph: false
+postgres: true
+kafka: false
+opensearch: false
+emqx: false
+prometheus: true
+grafana: true
+loki: false
+opentelemetry: false
+argocd: true
+trivy: true
+gitea: false
+
+# Dependency rules (validated by scripts/lib/validate-config.sh)
+# kafka -> storage_local_path or ceph
+# opensearch -> storage_local_path or ceph; warn on low memory
+# ceph -> storage profile / explicit enable
+# service_mesh -> cilium
+# argocd -> local git or manifests (gitea optional)
+dependencies:
+  kafka:
+    requires_any_of: [storage_local_path, ceph]
+  opensearch:
+    requires_any_of: [storage_local_path, ceph]
+    min_memory_mb_warn: 4096
+  ceph:
+    requires_profile_or_explicit: true
+  service_mesh:
+    requires_all_of: [cilium]
+  argocd:
+    requires_any_of: [gitea, storage_local_path]

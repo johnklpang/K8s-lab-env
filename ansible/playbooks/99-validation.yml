@@ -1,0 +1,6 @@
+---
+- name: Post-deployment validation
+  hosts: masters
+  become: true
+  roles:
+    - validation

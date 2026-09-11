@@ -1,0 +1,31 @@
+---
+# Minimal profile — LAB VERIFIED target for clean-room acceptance
+# Disable heavy optional components for 2 vCPU / 2 GB nodes
+
+kubernetes: true
+containerd: true
+cilium: true
+hubble: true
+dns: true
+cert_manager: true
+ingress: true
+service_mesh: false
+storage_local_path: true
+ceph: false
+postgres: true
+kafka: false
+opensearch: false
+emqx: false
+prometheus: true
+grafana: true
+loki: false
+opentelemetry: false
+argocd: true
+trivy: true
+gitea: false
+
+profile_meta:
+  name: minimal
+  classification: LAB_VERIFIED
+  description: "Core platform with PostgreSQL, Prometheus, Grafana, and Argo CD"
+  resource_warnings: true

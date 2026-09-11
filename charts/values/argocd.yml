@@ -1,0 +1,12 @@
+global:
+  image:
+    repository: "{{ZOT_FQDN}}/quay.io/argoproj/argocd"
+server:
+  ingress:
+    enabled: true
+    hosts:
+      - "{{ARGOCD_FQDN}}"
+configs:
+  params:
+    server.insecure: true
+# GitOps sources must be local (gitea.<domain> or offline git) — no Internet

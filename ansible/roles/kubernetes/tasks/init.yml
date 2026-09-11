@@ -1,0 +1,40 @@
+---
+- name: Check if control plane already initialized
+  ansible.builtin.stat:
+    path: /etc/kubernetes/admin.conf
+  register: admin_conf
+
+- name: Create kubeadm config using DNS controlPlaneEndpoint
+  ansible.builtin.template:
+    src: kubeadm-config.yaml.j2
+    dest: /etc/kubeadm-config.yaml
+    mode: "0600"
+  when: not admin_conf.stat.exists
+
+- name: Initialize control plane (idempotent skip if exists)
+  ansible.builtin.command: kubeadm init --config /etc/kubeadm-config.yaml --upload-certs
+  args:
+    creates: /etc/kubernetes/admin.conf
+  when: not admin_conf.stat.exists
+  register: kubeadm_init
+
+- name: Configure kubeconfig for devops
+  ansible.builtin.shell: |
+    set -euo pipefail
+    mkdir -p /home/devops/.kube
+    cp -f /etc/kubernetes/admin.conf /home/devops/.kube/config
+    chown -R devops:devops /home/devops/.kube
+  args:
+    executable: /bin/bash
+  when: admin_conf.stat.exists or kubeadm_init is changed
+
+- name: Generate join command artifact
+  ansible.builtin.shell: |
+    set -euo pipefail
+    kubeadm token create --print-join-command > /opt/k8s-airgap-cicd-lab/state/kubeadm-join.sh
+    chmod 0750 /opt/k8s-airgap-cicd-lab/state/kubeadm-join.sh
+  args:
+    executable: /bin/bash
+  when: inventory_hostname == master_fqdn
+  run_once: true
+  failed_when: false

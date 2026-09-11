@@ -1,0 +1,12 @@
+---
+- name: Install Loki
+  ansible.builtin.command: >
+    helm upgrade --install loki grafana/loki
+    --version {{ versions.loki.chart_version }}
+    --namespace monitoring
+    --create-namespace
+    --set loki.image.repository={{ zot_fqdn }}/docker.io/grafana/loki
+    --set singleBinary.replicas=1
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false

@@ -1,0 +1,38 @@
+---
+- name: Ensure database namespace
+  ansible.builtin.command: kubectl create namespace database --dry-run=client -o yaml
+  register: dbns
+  changed_when: false
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+
+- name: Apply database namespace
+  ansible.builtin.shell: kubectl create namespace database --dry-run=client -o yaml | kubectl apply -f -
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  changed_when: false
+
+- name: Install PostgreSQL with cluster DNS service name
+  ansible.builtin.command: >
+    helm upgrade --install postgresql bitnami/postgresql
+    --version {{ versions.postgres.chart_version }}
+    --namespace database
+    --set image.registry={{ zot_fqdn }}
+    --set image.repository=docker.io/bitnami/postgresql
+    --set primary.persistence.enabled=true
+    --set primary.persistence.size=5Gi
+    --set auth.username=labuser
+    --set auth.database=labdb
+    --set auth.password=lab-postgres-password
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false
+
+- name: Create Ingress for postgres DNS name (optional admin tooling)
+  ansible.builtin.copy:
+    dest: /tmp/postgres-ingress.yaml
+    content: |
+      # PostgreSQL remains ClusterIP; external DNS name {{ service_fqdns.postgres }}
+      # is reserved for documentation and future TCP ingress.
+      # In-cluster clients MUST use postgres.database.svc.cluster.local
+  changed_when: false

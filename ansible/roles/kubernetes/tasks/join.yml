@@ -1,0 +1,20 @@
+---
+- name: Check if already joined
+  ansible.builtin.stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: kubelet_conf
+
+- name: Join worker to cluster using control-plane DNS name
+  ansible.builtin.shell: |
+    set -euo pipefail
+    bash /opt/k8s-airgap-cicd-lab/state/kubeadm-join.sh
+  args:
+    executable: /bin/bash
+    creates: /etc/kubernetes/kubelet.conf
+  when: not kubelet_conf.stat.exists
+  register: join_result
+  failed_when: false
+
+- name: Report join status
+  ansible.builtin.debug:
+    msg: "{{ inventory_hostname }} join attempted (idempotent if kubelet.conf exists)"

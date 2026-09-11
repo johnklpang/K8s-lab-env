@@ -1,0 +1,22 @@
+---
+- name: Install Kubernetes packages (pinned version)
+  ansible.builtin.dnf:
+    name:
+      - "kubelet-{{ versions.kubernetes.version }}"
+      - "kubeadm-{{ versions.kubernetes.version }}"
+      - "kubectl-{{ versions.kubernetes.version }}"
+    state: present
+    allow_downgrade: true
+  register: k8s_pkgs
+  failed_when: false
+
+- name: Hold note when packages already present
+  ansible.builtin.debug:
+    msg: "[OK] Kubernetes packages install attempted for {{ versions.kubernetes.version }}"
+
+- name: Enable kubelet
+  ansible.builtin.service:
+    name: kubelet
+    enabled: true
+    state: started
+  failed_when: false

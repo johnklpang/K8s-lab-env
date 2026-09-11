@@ -1,0 +1,10 @@
+# cert-manager — images from zot.<domain>
+image:
+  repository: zot.lab.example/quay.io/jetstack/cert-manager-controller
+webhook:
+  image:
+    repository: zot.lab.example/quay.io/jetstack/cert-manager-webhook
+cainjector:
+  image:
+    repository: zot.lab.example/quay.io/jetstack/cert-manager-cainjector
+installCRDs: true

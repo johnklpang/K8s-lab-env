@@ -1,0 +1,9 @@
+---
+- name: Configure storage
+  hosts: masters
+  become: true
+  roles:
+    - role: storage_local_path
+      when: components.storage_local_path | default(true)
+    - role: storage_ceph
+      when: components.ceph | default(false)

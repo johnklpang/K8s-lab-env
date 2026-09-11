@@ -1,0 +1,32 @@
+---
+# Standard profile — enables most application and observability components
+# Expect resource pressure warnings on 2 GB LAB nodes
+
+kubernetes: true
+containerd: true
+cilium: true
+hubble: true
+dns: true
+cert_manager: true
+ingress: true
+service_mesh: true
+storage_local_path: true
+ceph: false
+postgres: true
+kafka: true
+opensearch: true
+emqx: true
+prometheus: true
+grafana: true
+loki: true
+opentelemetry: true
+argocd: true
+trivy: true
+gitea: false
+
+profile_meta:
+  name: standard
+  classification: LAB_VERIFIED
+  description: "Full application stack without Ceph; service mesh enabled"
+  resource_warnings: true
+  memory_note: "OpenSearch and Kafka may require higher memory than LAB default"

@@ -1,0 +1,17 @@
+---
+- name: Warn about Ceph resource requirements on LAB
+  ansible.builtin.debug:
+    msg: >
+      [WARN] Rook-Ceph is not recommended on 2GB LAB nodes.
+      Classification remains LAB_VERIFIED / PRODUCTION_REFERENCE only.
+
+- name: Install Rook-Ceph operator when enabled
+  ansible.builtin.command: >
+    helm upgrade --install rook-ceph rook-release/rook-ceph
+    --version {{ versions.rook_ceph.chart_version }}
+    --namespace rook-ceph
+    --create-namespace
+    --set image.repository={{ zot_fqdn }}/docker.io/rook/ceph
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false

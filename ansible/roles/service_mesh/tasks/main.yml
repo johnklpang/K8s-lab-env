@@ -1,0 +1,20 @@
+---
+- name: Install Istio (optional service mesh) offline
+  ansible.builtin.debug:
+    msg: "Service mesh install uses pinned Istio {{ versions.istio.version }} images from {{ zot_fqdn }}"
+
+- name: Apply Istio operator/manifests if present in offline bundle
+  ansible.builtin.shell: |
+    set -euo pipefail
+    if [[ -x /opt/k8s-airgap-cicd-lab/offline-bundle/binaries/istioctl ]]; then
+      /opt/k8s-airgap-cicd-lab/offline-bundle/binaries/istioctl install -y \
+        --set values.global.hub={{ zot_fqdn }}/docker.io/istio \
+        --set values.global.tag={{ versions.istio.version }}
+    else
+      echo "[SKIP] istioctl not present in offline bundle"
+    fi
+  args:
+    executable: /bin/bash
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false

@@ -1,0 +1,58 @@
+---
+- name: Install cert-manager CRDs and chart
+  ansible.builtin.command: >
+    helm upgrade --install cert-manager jetstack/cert-manager
+    --version {{ versions.cert_manager.chart_version }}
+    --namespace cert-manager
+    --create-namespace
+    --set installCRDs=true
+    --set image.repository={{ zot_fqdn }}/quay.io/jetstack/cert-manager-controller
+    --set webhook.image.repository={{ zot_fqdn }}/quay.io/jetstack/cert-manager-webhook
+    --set cainjector.image.repository={{ zot_fqdn }}/quay.io/jetstack/cert-manager-cainjector
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false
+
+- name: Apply LAB self-signed ClusterIssuer
+  ansible.builtin.copy:
+    dest: /tmp/lab-clusterissuer.yaml
+    mode: "0644"
+    content: |
+      apiVersion: cert-manager.io/v1
+      kind: ClusterIssuer
+      metadata:
+        name: lab-selfsigned
+      spec:
+        selfSigned: {}
+      ---
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: lab-ca
+        namespace: cert-manager
+      spec:
+        isCA: true
+        commonName: lab-ca.{{ lab_domain }}
+        secretName: lab-ca-secret
+        privateKey:
+          algorithm: ECDSA
+          size: 256
+        issuerRef:
+          name: lab-selfsigned
+          kind: ClusterIssuer
+      ---
+      apiVersion: cert-manager.io/v1
+      kind: ClusterIssuer
+      metadata:
+        name: lab-ca-issuer
+      spec:
+        ca:
+          secretName: lab-ca-secret
+  changed_when: false
+
+- name: Apply issuers
+  ansible.builtin.command: kubectl apply -f /tmp/lab-clusterissuer.yaml
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false
+  changed_when: false

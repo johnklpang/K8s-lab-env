@@ -1,0 +1,9 @@
+{
+  "component": "prometheus",
+  "chart": "kube-prometheus-stack",
+  "version": "66.2.1",
+  "source_url": "https://prometheus-community.github.io/helm-charts",
+  "offline_repo_url": "http://helm.lab.example:8081/helm/",
+  "values_file": "prometheus-values.yaml",
+  "checksum": "ac94d28640fbb4d0a489089ec1bf522558e5d103c71736e11c69b8bd07eaa918"
+}

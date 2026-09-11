@@ -1,0 +1,12 @@
+---
+- name: Configure client offline repository using DNS URL
+  ansible.builtin.copy:
+    dest: /etc/yum.repos.d/lab-offline.repo
+    mode: "0644"
+    content: |
+      [lab-offline]
+      name=LAB Offline via {{ repo_fqdn }}
+      baseurl={{ repo_url }}
+      enabled=1
+      gpgcheck=0
+  when: offline_mode | default(false)

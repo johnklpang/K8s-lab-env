@@ -1,0 +1,39 @@
+---
+# Security checklist — LAB vs PRODUCTION
+classification: LAB_VERIFIED
+production_ready: false
+
+controls:
+  - id: RBAC
+    lab: enabled_default
+    production: required_least_privilege
+  - id: PodSecurityAdmission
+    lab: baseline
+    production: restricted
+  - id: NetworkPolicy
+    lab: sample_policies
+    production: default_deny_plus_allow
+  - id: TLS
+    lab: self_signed_ca
+    production: enterprise_pki
+  - id: ImageDigests
+    lab: preferred
+    production: required
+  - id: Secrets
+    lab: credentials_example_lab_only
+    production: vault_or_sealed_secrets
+  - id: AuditLogging
+    lab: basic
+    production: centralized_siem
+  - id: RootSSH
+    lab: allowed_for_breakglass
+    production: disabled
+  - id: OfflineRepos
+    lab: enforced_in_offline_mode
+    production: required
+
+lab_exceptions:
+  - Weak devops/password LAB account
+  - HTTP registry mode for Zot
+  - Self-signed certificates
+  - Single control-plane node (not HA)

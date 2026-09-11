@@ -1,0 +1,35 @@
+---
+# DNS server role — configures dnsmasq on OPS from generated central config.
+# All records use names from config/lab.yml; addresses from config/network.yml only.
+
+- name: Install dnsmasq
+  ansible.builtin.dnf:
+    name: dnsmasq
+    state: present
+  when: not (offline_mode | default(false))
+  failed_when: false
+
+- name: Install dnsmasq from offline repo
+  ansible.builtin.dnf:
+    name: dnsmasq
+    state: present
+  when: offline_mode | default(false)
+
+- name: Deploy generated dnsmasq configuration
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../../scripts/dns/generated/dnsmasq.conf"
+    dest: /etc/dnsmasq.d/lab.conf
+    mode: "0644"
+  notify: Restart dnsmasq
+
+- name: Ensure dnsmasq enabled
+  ansible.builtin.service:
+    name: dnsmasq
+    state: started
+    enabled: true
+
+- name: Verify forward resolution for OPS FQDN
+  ansible.builtin.command: getent hosts {{ ops_fqdn }}
+  register: dns_ops
+  changed_when: false
+  failed_when: dns_ops.rc != 0

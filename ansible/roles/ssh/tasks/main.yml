@@ -1,0 +1,45 @@
+---
+- name: Ensure devops user exists
+  ansible.builtin.user:
+    name: "{{ lab_user | default('devops') }}"
+    groups: wheel
+    append: true
+    shell: /bin/bash
+    create_home: true
+
+- name: Ensure sudo NOPASSWD for LAB user
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/devops
+    content: "devops ALL=(ALL) NOPASSWD:ALL\n"
+    mode: "0440"
+    validate: "visudo -cf %s"
+
+- name: Ensure .ssh directory
+  ansible.builtin.file:
+    path: "/home/{{ lab_user | default('devops') }}/.ssh"
+    state: directory
+    owner: "{{ lab_user | default('devops') }}"
+    group: "{{ lab_user | default('devops') }}"
+    mode: "0700"
+
+- name: Generate OPS SSH key if missing
+  ansible.builtin.command: >
+    ssh-keygen -t ed25519 -N '' -f /home/{{ lab_user | default('devops') }}/.ssh/id_ed25519
+  args:
+    creates: "/home/{{ lab_user | default('devops') }}/.ssh/id_ed25519"
+  when: inventory_hostname == ops_fqdn
+  become_user: "{{ lab_user | default('devops') }}"
+
+- name: Fetch OPS public key
+  ansible.builtin.slurp:
+    src: "/home/{{ lab_user | default('devops') }}/.ssh/id_ed25519.pub"
+  register: ops_pubkey
+  when: inventory_hostname == ops_fqdn
+  delegate_to: "{{ ops_fqdn }}"
+  run_once: true
+
+- name: Authorize OPS key on all nodes
+  ansible.posix.authorized_key:
+    user: "{{ lab_user | default('devops') }}"
+    key: "{{ hostvars[ops_fqdn].ops_pubkey.content | b64decode }}"
+  when: hostvars[ops_fqdn].ops_pubkey is defined

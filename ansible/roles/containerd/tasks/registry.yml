@@ -1,0 +1,18 @@
+---
+- name: Ensure containerd registry hosts directory for Zot DNS name
+  ansible.builtin.file:
+    path: "/etc/containerd/certs.d/{{ zot_fqdn }}"
+    state: directory
+    mode: "0755"
+  # This task file is included from main — keep registry mirror DNS-based
+
+- name: Configure hosts.toml for Zot (LAB HTTP mode)
+  ansible.builtin.copy:
+    dest: "/etc/containerd/certs.d/{{ zot_fqdn }}/hosts.toml"
+    mode: "0644"
+    content: |
+      server = "{{ zot_url }}"
+      [host."{{ zot_url }}"]
+        capabilities = ["pull", "resolve", "push"]
+        skip_verify = true
+  notify: Restart containerd

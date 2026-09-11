@@ -1,0 +1,15 @@
+---
+- name: Application components
+  hosts: masters
+  become: true
+  roles:
+    - role: postgres
+      when: components.postgres | default(false)
+    - role: kafka
+      when: components.kafka | default(false)
+    - role: opensearch
+      when: components.opensearch | default(false)
+    - role: emqx
+      when: components.emqx | default(false)
+    - role: trivy
+      when: components.trivy | default(false)

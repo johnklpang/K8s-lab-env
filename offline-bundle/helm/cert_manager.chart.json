@@ -1,0 +1,9 @@
+{
+  "component": "cert_manager",
+  "chart": "cert-manager",
+  "version": "v1.16.2",
+  "source_url": "https://charts.jetstack.io",
+  "offline_repo_url": "http://helm.lab.example:8081/helm/",
+  "values_file": "cert_manager-values.yaml",
+  "checksum": "75071f90ee2634adcaffacd5d6b7a28a8ea0e16785992c1257daef8453a784f7"
+}

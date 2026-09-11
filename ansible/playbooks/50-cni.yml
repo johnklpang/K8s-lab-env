@@ -1,0 +1,8 @@
+---
+- name: Install Cilium and Hubble
+  hosts: masters
+  become: true
+  roles:
+    - cilium
+    - role: hubble
+      when: components.hubble | default(true)

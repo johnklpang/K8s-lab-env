@@ -1,0 +1,9 @@
+{
+  "component": "trivy",
+  "chart": "trivy",
+  "version": "0.25.0",
+  "source_url": "https://aquasecurity.github.io/helm-charts/",
+  "offline_repo_url": "http://helm.lab.example:8081/helm/",
+  "values_file": "trivy-values.yaml",
+  "checksum": "334e1d687a9e0ccd35624dbc011f019b2c55e96d3e7ade70b0f76943c33c08e9"
+}

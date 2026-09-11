@@ -1,0 +1,9 @@
+{
+  "component": "cilium",
+  "chart": "cilium",
+  "version": "1.16.5",
+  "source_url": "https://helm.cilium.io/",
+  "offline_repo_url": "http://helm.lab.example:8081/helm/",
+  "values_file": "cilium-values.yaml",
+  "checksum": "9e949d548c4c9272320fbed0923baf90b2033d21f92d7e9e8a7db950adee637a"
+}

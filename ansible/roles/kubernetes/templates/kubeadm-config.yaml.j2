@@ -1,0 +1,30 @@
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
+nodeRegistration:
+  criSocket: unix:///run/containerd/containerd.sock
+  name: "{{ inventory_hostname }}"
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+kubernetesVersion: v{{ versions.kubernetes.version }}
+clusterName: {{ lab_domain | replace('.', '-') }}
+controlPlaneEndpoint: "{{ master_fqdn }}:{{ ports.kubernetes_api | default(6443) }}"
+networking:
+  podSubnet: "{{ kubernetes_pod_cidr }}"
+  serviceSubnet: "{{ kubernetes_service_cidr }}"
+  dnsDomain: cluster.local
+apiServer:
+  certSANs:
+    - "{{ master_fqdn }}"
+    - "{{ ops_fqdn }}"
+    - kubernetes
+    - kubernetes.default
+    - kubernetes.default.svc
+    - kubernetes.default.svc.cluster.local
+imageRepository: "{{ zot_fqdn }}/registry.k8s.io"
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+cgroupDriver: systemd
+clusterDNS:
+  - "{{ kubernetes_cluster_dns }}"

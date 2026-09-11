@@ -1,0 +1,15 @@
+---
+- name: Install kube-prometheus-stack
+  ansible.builtin.command: >
+    helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack
+    --version {{ versions.prometheus.chart_version }}
+    --namespace monitoring
+    --create-namespace
+    --set prometheus.prometheusSpec.image.registry={{ zot_fqdn }}
+    --set grafana.enabled={{ components.grafana | default(true) | lower }}
+    --set grafana.ingress.enabled=true
+    --set grafana.ingress.hosts[0]={{ service_fqdns.grafana }}
+    --set grafana.adminPassword=lab-grafana-password
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false

@@ -1,0 +1,4 @@
+---
+# Alias main to packages for default role inclusion
+- name: Include package installation
+  ansible.builtin.include_tasks: packages.yml

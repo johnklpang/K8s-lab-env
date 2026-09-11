@@ -1,0 +1,42 @@
+---
+- name: Ensure Helm is available
+  ansible.builtin.command: helm version
+  register: helm_v
+  changed_when: false
+  failed_when: false
+
+- name: Add local Helm repo using DNS name
+  ansible.builtin.command: >
+    helm repo add lab-helm {{ helm_url }} --force-update
+  environment:
+    HELM_REPO_URL: "{{ helm_url }}"
+  changed_when: false
+  failed_when: false
+
+- name: Install Cilium via Helm with Zot DNS image prefix
+  ansible.builtin.command: >
+    helm upgrade --install cilium cilium/cilium
+    --version {{ versions.cilium.chart_version }}
+    --namespace kube-system
+    --set image.repository={{ zot_fqdn }}/quay.io/cilium/cilium
+    --set image.useDigest=false
+    --set operator.image.repository={{ zot_fqdn }}/quay.io/cilium/operator
+    --set hubble.enabled={{ components.hubble | default(true) | lower }}
+    --set hubble.relay.enabled={{ components.hubble | default(true) | lower }}
+    --set hubble.ui.enabled={{ components.hubble | default(true) | lower }}
+    --set ipam.mode=kubernetes
+    --set kubeProxyReplacement=true
+    --set k8sServiceHost={{ master_fqdn }}
+    --set k8sServicePort={{ ports.kubernetes_api | default(6443) }}
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  register: cilium_install
+  changed_when: "'installed' in cilium_install.stdout or 'upgraded' in cilium_install.stdout"
+  failed_when: false
+
+- name: Wait for Cilium pods
+  ansible.builtin.command: kubectl -n kube-system rollout status ds/cilium --timeout=180s
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  changed_when: false
+  failed_when: false

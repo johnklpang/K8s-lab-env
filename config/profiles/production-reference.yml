@@ -1,0 +1,61 @@
+---
+# Production-reference profile — reference architecture settings, NOT production certification.
+# Classification: PRODUCTION_REFERENCE — do not claim PRODUCTION READY.
+
+kubernetes: true
+containerd: true
+cilium: true
+hubble: true
+dns: true
+cert_manager: true
+ingress: true
+service_mesh: true
+storage_local_path: false
+ceph: true
+postgres: true
+kafka: true
+opensearch: true
+emqx: true
+prometheus: true
+grafana: true
+loki: true
+opentelemetry: true
+argocd: true
+trivy: true
+gitea: true
+
+profile_meta:
+  name: production-reference
+  classification: PRODUCTION_REFERENCE
+  production_ready: false
+  description: >
+    Production-oriented component selection and sizing guidance.
+    This is a reference architecture, not a production certification.
+  control_plane_count: 3
+  worker_count_hint: 3
+  ha_required:
+    - api_server
+    - etcd
+    - load_balancer
+    - ingress
+    - storage
+    - registry
+    - dns
+    - monitoring
+  security:
+    tls_required: true
+    vault_credentials: true
+    disable_lab_passwords: true
+    root_ssh: false
+    mfa: recommended
+  resources:
+    control_plane:
+      vcpu: 4
+      memory_gb: 8
+    worker:
+      vcpu: 8
+      memory_gb: 16
+    storage_nodes:
+      vcpu: 8
+      memory_gb: 32
+      disk_gb: 1000

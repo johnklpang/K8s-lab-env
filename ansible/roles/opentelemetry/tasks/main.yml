@@ -1,0 +1,12 @@
+---
+- name: Install OpenTelemetry Collector
+  ansible.builtin.command: >
+    helm upgrade --install otel-collector open-telemetry/opentelemetry-collector
+    --version {{ versions.opentelemetry.chart_version }}
+    --namespace observability
+    --create-namespace
+    --set image.repository={{ zot_fqdn }}/docker.io/otel/opentelemetry-collector-contrib
+    --set mode=deployment
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false

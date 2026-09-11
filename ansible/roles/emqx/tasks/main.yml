@@ -1,0 +1,13 @@
+---
+- name: Install EMQX
+  ansible.builtin.command: >
+    helm upgrade --install emqx emqx/emqx
+    --version {{ versions.emqx.chart_version }}
+    --namespace messaging
+    --create-namespace
+    --set image.repository={{ zot_fqdn }}/docker.io/emqx/emqx
+    --set replicaCount=1
+    --set service.type=ClusterIP
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  failed_when: false

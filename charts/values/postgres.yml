@@ -1,0 +1,11 @@
+image:
+  registry: "{{ZOT_FQDN}}"
+  repository: docker.io/bitnami/postgresql
+primary:
+  persistence:
+    enabled: true
+    size: 5Gi
+auth:
+  username: labuser
+  database: labdb
+# Clients use postgres.database.svc.cluster.local — never hardcoded IPs

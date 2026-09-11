@@ -1,0 +1,9 @@
+{
+  "component": "ingress",
+  "chart": "ingress-nginx",
+  "version": "4.11.3",
+  "source_url": "https://kubernetes.github.io/ingress-nginx",
+  "offline_repo_url": "http://helm.lab.example:8081/helm/",
+  "values_file": "ingress-values.yaml",
+  "checksum": "12018aab383e6915ebcfc16c909d875d9b0d1f78337463fdb51c09bae5d01c5a"
+}
